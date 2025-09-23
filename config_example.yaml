@@ -1,0 +1,89 @@
+# Configuration for MolGeneration training
+
+# Model configuration
+model:
+  model_name: "gpt2"
+  model_type: "causal_lm"
+  vocab_size: 50257
+  max_length: 512
+  hidden_size: 768
+  num_layers: 12
+  num_attention_heads: 12
+  dropout: 0.1
+  
+  # Molecular-specific configurations
+  chemical_vocab_size: 1000
+  use_chemical_embeddings: true
+  molecular_attention: true
+  
+  # Generation configuration
+  generation_max_length: 128
+  generation_temperature: 1.0
+  generation_top_k: 50
+  generation_top_p: 0.95
+
+# Training configuration
+training:
+  num_epochs: 10
+  batch_size: 32
+  learning_rate: 5e-5
+  weight_decay: 0.01
+  warmup_steps: 1000
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+  
+  # Two-stage specific
+  stage1_epochs: 5
+  stage2_epochs: 5
+  stage1_lr: 5e-5
+  stage2_lr: 1e-5
+  
+  # Reinforcement learning (Stage 2)
+  use_rl: true
+  rl_reward_weight: 1.0
+  rl_kl_weight: 0.1
+  rl_clip_range: 0.2
+  
+  # Optimization
+  optimizer: "adamw"
+  scheduler: "linear"
+  save_strategy: "epoch"
+  evaluation_strategy: "epoch"
+  logging_steps: 100
+  save_steps: 1000
+
+# Data configuration
+data:
+  reasoning_data_path: "data/reasoning"
+  generation_data_path: "data/generation"
+  validation_split: 0.1
+  test_split: 0.1
+  
+  # Data processing
+  max_smiles_length: 128
+  canonicalize_smiles: true
+  augment_smiles: true
+  use_selfies: false
+  
+  # Chemical reasoning data
+  include_properties:
+    - "molecular_weight"
+    - "logp" 
+    - "tpsa"
+    - "qed"
+  reasoning_template: "default"
+
+# Experiment configuration
+experiment_name: "mol_generation_experiment"
+output_dir: "./outputs"
+checkpoint_dir: "./checkpoints"
+log_dir: "./logs"
+
+# Hardware configuration
+device: "auto"  # auto, cpu, cuda
+num_gpus: 1
+mixed_precision: true
+
+# Reproducibility
+seed: 42
+deterministic: true
